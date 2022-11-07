@@ -10,8 +10,4 @@ class Student extends Model
     use HasFactory;
     protected $table = "students";
     protected $fillable = ['nama','nim','email','jurusan'];
-    protected $attributes = [
-        "updated_at" => NULL
-    ];
-   
 }
