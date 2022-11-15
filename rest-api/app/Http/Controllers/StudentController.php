@@ -17,6 +17,7 @@ class StudentController extends Controller
         return response()->json($data, 200);
     }
 
+    // menampilkan data secara detail dengan no id
     public function show($id)
     {
         $student = Student::find($id);
@@ -40,31 +41,27 @@ class StudentController extends Controller
 
     public function store(Request $request)
     {
-        $input = [
-            "nama" => $request->input('nama'),
-            "nim" => $request->input('nim'),
-            "email" => $request->input('email'),
-            "jurusan" => $request->input('jurusan')
-        ];
-        if($input['nama'] == null || $input['nim'] == null || $input['email'] == null || $input['jurusan'] == null || trim($input["nama"]) == "" || trim($input["nim"]) == "" || trim($input["email"] == "" || trim($input["jurusan"]) == "" ))
-        {
-            $data = [
-                "message" => "the field cannot blank",
-            ];
-    
-            return response()->json($data, 200);
-        }else{
-            
-            $student = Student::create($input);
+        // membuat validasi
 
-            $data = [
-                "message" => "Student is created succesfully",
-                "data" => $input
-            ];
-
-            return response()->json($data, 201);
+        $validateData = $request->validate([
+            // kolom => 'rules|rules'
+            "nama" => "required",
+            "nim" => "numeric|required",
+            "email" => "email|required",
+            "jurusan" => "required"
+        ]);            
         
-        }
+        // menggunakan Student untuk insert data
+        $student = Student::create($validateData);
+
+        $data = [
+                "message" => "Student is created succesfully",
+                "data" => $student
+            ];
+        // mengembalikan data (json) dan response code jika berhasil 201 
+        return response()->json($data, 201);
+        
+        
     }
 
     public function update(Request $request, $id)
